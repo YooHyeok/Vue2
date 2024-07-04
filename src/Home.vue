@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Appstatus/>
     <h1>{{ homeTitle }}</h1>
   </div>
 </template>

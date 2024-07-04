@@ -5,6 +5,7 @@
     <button v-on:click="count ++">추가</button>
     <button @click="count --">감소</button>
     <Home/>
+    <Appstatus/>
   </div>
 </template>
 
