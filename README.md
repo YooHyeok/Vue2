@@ -283,5 +283,81 @@ npm run dev
   2. export default 블록 내에 components 속성에 import한 컴포넌트명을 입력한다.
   3. `<template>` 태그 내에 해당 컴포넌트를 태그 문법으로 선언해준다.
 
+## 컴포넌트 전역 등록 및 다중 파일 import
 
+  - ##  Status.vue
+    ```html
+    <template>
+      <div>
+        <Appstatus/>
+        <h1>{{ homeTitle }}</h1>
+      </div>
+    </template>
+
+    <script>
+      export default {
+        data() {
+          return {
+            homeTitle: "홈입니당."
+          }
+        }
+      }
+    </script>
+    ```
+
+  - ## main.js
+    ```javascript
+    <!-- 생략 -->
+    import Vue from 'vue'
+    import Status from './Status'
+
+    Vue.component('Appstatus', Status)
+    
+    <!-- 생략 -->
+    ```
+    main.js 파일에서 Vue의 component() 함수를 통해 전역으로 등록한다.  
+    1. 첫번째 인자로는 컴포넌트의 이름을 넣는다.
+    2. 두번째 인자로는 옵션 즉, import한 컴포넌트의 식별자를 넣는다.
+
+- ## App.vue
+  ```html
+  <template>
+    <Home/>
+    <Appstatus/> <!-- import 혹은 components로 모듈을 내보내지 않아도 사용가능 -->
+  </template>
+
+  <script>
+
+  import Home from "./Home.vue"
+
+  export default {
+    components : {
+      Home
+    },
+    data () {
+      return {}
+    }
+  }
+  </script>
+  ```
+
+- ## Home.vue
+  ```html
+  <template>
+  <div>
+    <Appstatus/> <!-- 어느 곳이든 참조가 가능하다! -->
+    <h1>{{ homeTitle }}</h1>
+  </div>
+  </template>
+
+  <script>
+    export default {
+      data() {
+        return {
+          homeTitle: "홈입니당."
+        }
+      }
+    }
+  </script>
+  ```
 
