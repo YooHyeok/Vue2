@@ -182,7 +182,7 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
 
 
 # Vue 애플리케이션 기본 파일 구성
-- App.vue
+- ## App.vue
   ```html
   <template>
   </template>
@@ -200,7 +200,7 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
   해당 블록 내에서는 name 속성과, data 함수 그리고 기타 다른 속성들을 하나의 객체로 구성하여 내보내게 된다.  
   `data()` 컴포넌트 인스턴스의 초기 반응 상태값을 반환하는 함수이다.
 
-- main.js
+- ## main.js
   ```javascript
   import Vue from 'vue'
   import App from './App.vue'
@@ -223,7 +223,7 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
   아직은 알 수 없는 복잡해 보이는 구문이 있지만, new 키워드와 함께 vue를 새로 선언해 주는 코드가 있다.  
   해당 코드를 통해 전체 어플리케이션이 구동된다고 보면 될것이다.  
 
-### 배포 명령
+#### 배포 명령
 ```
 npm run dev
 ```
@@ -234,3 +234,54 @@ npm run dev
 이러한 `.vue` 파일을 하나의 부품이라고 가정한다면 각 부품에는 규격이 존재한다.  
 `<template>` 태그 안에는 HTML코드가 들어가고, `<script>` 태그 안에는 `export default`를 사용하여 모듈을 추출하고, 해당 모듈 객체 안에는 `data()`나 메소드와 같은 것들로 구성되어 있으며, `main.js`의 `import` 와 같은 것들이 규격 이라고 생각하면 될것이다.  
 이런 규격들을 맞춰 vue 파일들이 구성되어야만 추후 배포 명령인 `npm run dev`를 통해 생성되는 최종 결과물인 .js 파일들을 완성할 수 있게 된다.
+
+
+# 컴포넌트 생성 및 사용
+
+## 단일 컴포넌트 파일간 import
+- ## Home.vue
+  ```html
+  <template>
+  <div>
+    <h1>{{ homeTitle }}</h1>
+  </div>
+  </template>
+
+  <script>
+    export default {
+      data() {
+        return {
+          homeTitle: "홈입니당."
+        }
+      }
+    }
+  </script>
+  ```
+
+- ## App.vue
+  ```html
+  <template>
+    <Home/>
+  </template>
+
+  <script>
+
+  import Home from "./Home.vue"
+
+  export default {
+    components : {
+      Home
+    },
+    data () {
+      return {}
+    }
+  }
+  </script>
+  ```
+
+  1. `<script>` 태그 안에 import 구문을 통해 해당 vue 컴포넌트 파일을 import한다.
+  2. export default 블록 내에 components 속성에 import한 컴포넌트명을 입력한다.
+  3. `<template>` 태그 내에 해당 컴포넌트를 태그 문법으로 선언해준다.
+
+
+
