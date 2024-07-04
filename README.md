@@ -126,6 +126,8 @@ vue cli를 한번도 사용해보지 않은 경우, 혹은 webpack으로 web개�
 (react에서는 mui가 대표적이다.)
 
 vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue cli가 설치되어 있어야 한다.
+
+## vuetify install
   ```bash
   vue add vuetify
   ```
@@ -179,9 +181,56 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
   ```
 
 
+# Vue 애플리케이션 기본 파일 구성
+- App.vue
+  ```html
+  <template>
+  </template>
+  <script>
+    export default {
+      name: 'App',
+      data () {
 
+      },
+    }
+  </script>
+  ```
+  `<template>` HTML 코드를 구성한다.  
+  (`export default`) ES6 에서 모듈을 추출하는 문법이다.  
+  해당 블록 내에서는 name 속성과, data 함수 그리고 기타 다른 속성들을 하나의 객체로 구성하여 내보내게 된다.  
+  `data()` 컴포넌트 인스턴스의 초기 반응 상태값을 반환하는 함수이다.
 
-### `export default`
-ES6 에서 모듈을 추출하는 문법 이다.
-### `import`
-ES6 에서 export default에 의해 추출된 모듈을 참조하는 문법이다.
+- main.js
+  ```javascript
+  import Vue from 'vue'
+  import App from './App.vue'
+  import router from './router'
+  import store from './store'
+  import vuetify from './plugins/vuetify'
+  import '@babel/polyfill'
+
+  Vue.config.productionTip = false
+
+  new Vue({
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app')
+  ```
+  (`import`) ES6 에서 export default에 의해 추출된 모듈을 참조하는 문법이다.
+
+  아직은 알 수 없는 복잡해 보이는 구문이 있지만, new 키워드와 함께 vue를 새로 선언해 주는 코드가 있다.  
+  해당 코드를 통해 전체 어플리케이션이 구동된다고 보면 될것이다.  
+
+### 배포 명령
+```
+npm run dev
+```
+
+터미널에 위 명령을 입력하여 실제 배포를 진행하게 되고 dist라는 디렉토리가 추가된다.  
+해당 디렉토리에 존재하는 js 확장자 파일을 열어보면, 굉장히 길고 복잡한 js 코드를 볼 수 있게 된다.  
+.vue 확장자 파일 혹은 main.js 파일들을 부품 삼아 조립해서 만든 결과물이라고 말할 수 있다.  
+이러한 `.vue` 파일을 하나의 부품이라고 가정한다면 각 부품에는 규격이 존재한다.  
+`<template>` 태그 안에는 HTML코드가 들어가고, `<script>` 태그 안에는 `export default`를 사용하여 모듈을 추출하고, 해당 모듈 객체 안에는 `data()`나 메소드와 같은 것들로 구성되어 있으며, `main.js`의 `import` 와 같은 것들이 규격 이라고 생각하면 될것이다.  
+이런 규격들을 맞춰 vue 파일들이 구성되어야만 추후 배포 명령인 `npm run dev`를 통해 생성되는 최종 결과물인 .js 파일들을 완성할 수 있게 된다.
