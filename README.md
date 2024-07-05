@@ -183,7 +183,7 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
 
 # Vue 애플리케이션 기본 파일 구성
 - ## App.vue
-  ```html
+  ```vue
   <template>
   </template>
   <script>
@@ -238,9 +238,9 @@ npm run dev
 
 # 컴포넌트 생성 및 사용
 
-## 단일 컴포넌트 파일간 import
+## 단일 컴포넌트 파일 간 import
 - ## Home.vue
-  ```html
+  ```vue
   <template>
   <div>
     <h1>{{ homeTitle }}</h1>
@@ -259,7 +259,7 @@ npm run dev
   ```
 
 - ## App.vue
-  ```html
+  ```vue
   <template>
     <Home/>
   </template>
@@ -286,7 +286,7 @@ npm run dev
 ## 컴포넌트 전역 등록 및 다중 파일 import
 
   - ##  Status.vue
-    ```html
+    ```vue
     <template>
       <div>
         <Appstatus/>
@@ -320,7 +320,7 @@ npm run dev
     2. 두번째 인자로는 옵션 즉, import한 컴포넌트의 식별자를 넣는다.
 
 - ## App.vue
-  ```html
+  ```vue
   <template>
     <Home/>
     <Appstatus/> <!-- import 혹은 components로 모듈을 내보내지 않아도 사용가능 -->
@@ -342,7 +342,7 @@ npm run dev
   ```
 
 - ## Home.vue
-  ```html
+  ```vue
   <template>
   <div>
     <Appstatus/> <!-- 어느 곳이든 참조가 가능하다! -->
@@ -361,3 +361,142 @@ npm run dev
   </script>
   ```
 
+# Vue 이벤트
+
+`v-on:이벤트명={함수명(실행식)}` 혹은 `@:이벤트명={함수명(실행식)}` 과 같은 속성 문법으로 사용한다.
+
+```vue
+<template>
+  <div>
+    <v-btn @click="num++">숫자증가</v-btn>
+    <v-btn v-on:click="decrease()">숫자감소</v-btn>
+  </div>
+</template>
+<script>
+export default {
+ data () {
+  return {
+    num: 1,
+  },
+  methods: {
+    decrease() {
+      this.num--;
+    }
+  }
+ } 
+}
+</script>
+
+```
+
+# Vue 에서의 this
+
+Vue에서 this는 Vue 자체를 가리킨다.
+Vue를 실행시키면 각 컴포넌트는 각각의 고유한 Vue 인스턴스를 가지게 된다.  
+각 컴포넌트에서 data () 함수를 통해 반응형 변수를 내보내기 할때 해당 컴포넌트의 Vue 인스턴스에 종속된다.
+일반적인 Vue 소스코드는 ES6 객체 리터럴 방식으로 구성되어 있으며, 런타임시 Vue 내부적으로 data 함수를 호출하여 반환 받은 객체를 data라는 속성에 바인딩하는 형태로 재해석된다.
+해당 코드들을 JS 방식의 코드로 재 해석해본다면 아래 예시중 3번째 예시와 같아지는데 이 코드상에서 this를 적용한다면 Vue 인스턴스가 된다 (컴포넌트의 고유한) 따라서 this키워드를 통해 name변수에 접근이 가능해진다.
+
+
+아래 코드를 보면 확인이 가능하다.
+
+- Vue 소스코드
+  ```js
+  export default {
+    data () {
+      return {
+        name: '뷰제이에스'
+      }
+    },
+    methods: {
+      changeName () {
+        this.name = "Hoza"
+      }
+    }
+  }
+  ```
+- Vue 런타임 해석(컴파일) 코드
+  ```js
+  var vm = new Vue ({
+    data :{
+        name: '뷰제이에스'
+    },
+    methods: {
+      changeName: function () {}
+        this.name = "Hoza"
+    }
+  })
+    
+  ```
+- 일반적인 js 문법
+  ```js
+  var vm = new Vue({
+	changeName: function(){
+		this.name = "Hoza";
+	},
+	name : '뷰제이에스'
+  });
+  ```
+
+실제로 vm을 직접 출력해본다면 아래와 같다
+```text/plain
+Vue {_uid:0, _isValue: true, $options: {...}, _renderproxy: Proxy, _self: Vue, ...}
+  ... 생략
+  name : '뷰제이에스'
+  ... 생략
+  
+```
+***data에 정의한 name 변수 값이 Vue 객체 바깥쪽에 선언된 것을 확인할 수 있다.***
+
+
+# Props 부모-자식 컴포넌트 간 데이터 전달 
+
+1. **부모 컴포넌트**  
+  `v-bind:{props명}="{변수명}"` 의 형태로 자식 컴포넌트의 속성을 지정하여 자식컴포넌트에 전달한다.  
+  ( `{생략가능}:{props명}="{변수명}` 약어 형태로 생략해서 사용 가능하다. )
+2. **자식 컴포넌트**  
+    ```js
+      export default {
+        props: ['nameOfChild']
+      }
+    ```
+    위 코드와 같이 내보내기 구문에서 props 속성에 문자열 배열 형태로 부모 컴포넌트로 부터 전달할 때의 props명을 입력해준다.
+
+- **완성 코드**
+  ```vue
+  <template>
+    <UserDetail v-bind:nameOfChild="name"></UserDetail>
+  </template>
+
+  <script>
+  import UserDetail from "./UserDetail.vue"
+
+  export default {
+    components: {
+      UserDetail
+    },
+    data () {
+      return {
+        name: '뷰제이에스'
+      }
+    },
+    methods: {
+      changeName () { // changeName = function () {} 과 동일한 표현?
+        this.name = "Hoza"
+      }
+    }
+  }
+  </>
+  ```
+
+  ```vue
+  <template>
+      <p>{{ nameOfChild }}</p>
+  </template>
+
+  <script>
+  export default {
+    props: ['nameOfChild']
+  }
+  </script>
+  ```
