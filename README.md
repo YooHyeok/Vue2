@@ -502,7 +502,7 @@ Vue {_uid:0, _isValue: true, $options: {...}, _renderproxy: Proxy, _self: Vue, .
   ```
 
 
-# Props Type - Property Validation(프로퍼티 타입 유효성 검사)
+## Props Type - Property Validation(프로퍼티 타입 유효성 검사)
 
 props가 어떤 데이터타입을 받아야 하는지 기록하기 위해 데이터타입을 작성한다.
 
@@ -576,7 +576,7 @@ found in
   }
   </script>
   ```
-### Props 세부 설정1 (type, required), default)
+## Props 세부 설정1 (type, required), default)
 
   ```vue
     <UserDetail v-bind:nameOfChild="name"></UserDetail>
@@ -596,7 +596,7 @@ found in
   </script>
   ```
   단일값에 대한 props에는 위와 같이 type, required 등의 세부 옵션을 부여할 수 있게 된다.
-### Props 세부 설정2 (default)
+## Props 세부 설정2 (default)
 
   ```vue
     <UserDetail></UserDetail>
@@ -617,7 +617,7 @@ found in
   ```
   props 자체를 넘기지 않았을 경우 자식 컴포넌트에서 기본값을 지정할 수 있게 된다.
 
-  ### Object type Props default 예외사항
+## Object type Props default 예외사항
 
   ```vue
   <UserDetail :nameOfChild="{name: '존'}"></UserDetail>
@@ -685,7 +685,7 @@ found in
   ```
   위와같이 default는 함수형태가 아니여도 적용된다.
 
-# props와 computed
+## props와 computed
 - Vue 인스턴스가 생성될 때, data의 값을 받아 미리 계산하여 저장하고 불러온다.
 - method 형태로 작성하지만 Vue에서 proxy 처리하여 property처럼 사용한다.
 - 특정 데이터의 변경사항을 실시간으로 처리한다.
@@ -717,6 +717,43 @@ export default {
 }
 </script>
 ```
+computed속성으로 정의한 함수는 호출부인 () 없이 함수명 만으로 접근하여 데이터를 바인딩시킨다.  
 예제에서는 this키워드를 통해 부모컴포넌트의 props에 접근한뒤 데이터를 변경하는데 사용했다.  
 여기서 알수 있는 점은 this키워드를 통해 props에 접근하였다는 것인데 일반적으로 data() 함수를 통해 내보내기 하는 변수를
 this키워드를 통해 접근하는 예를 생각한다면 props를 넘겨받는 순간 `자식 컴포넌트의 data:{} 에 등록`되는것으로 예측할 수 있다.
+
+## Props 부모-자식간 연결(?)에 대한 위험성
+```vue
+<v-btn @click="switchName()">이름 변경</v-btn>
+```
+```vue
+methods: {
+  switchName () { // 부모 컴포넌트의 props 값 수정.
+    this.nameOfChild = '컴퓨터'
+  }
+},
+```
+위와 같이 methods 속성을 통해 this 키워드로 해당 props에 접근하여 값을 변경하는 함수를 선언하고, 버튼 이벤트에 해당 함수를 적용할 경우 자식/부모 컴포넌트 모든 값이 변경되며 아래와 같은 오류 내용이 콘솔에 출력된다.
+```text/plain
+vue.runtime.esm.js:4448 [Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "nameOfChild"
+
+found in
+
+---> <UserDetail>
+       <User> at src/components/user/User.vue
+         <VMain>
+           <VApp>
+             <App> at src/App.vue
+               <Root>
+```
+부모 컴포넌트가 re-render 되는 시점에 해당 값이 부모 컴포넌트에 덮어씌워지기 때문에 Props를 직접적으로 변경하는 것을 피하라. 라는 의미이다.  
+
+자식 컴포넌트에서 부모 컴포넌트로부터 넘겨받은 props값을 통해 여러가지 작업을 하더라도(computed 등을 통해) 그 값이 부모 컴포넌트에 의해 언제든지 변경될 수 있다는 위험성을 가지고 있다는 이야기이다.
+
+1. 자식 컴포넌트에서 props값 수정 → 자식 컴포넌트에 반영
+2. 부모컴포넌트에서 props값 수정 → 자식 컴포넌트에 반영
+
+위와 같은 순서로 사용하게 되면 자식 컴포넌트에서 값을 변경해서 사용하고 있던 것에서 부모 컴포넌트의 값이 변경되기 때문에 컴포넌트의 독립성이 없어지게 된다.  
+부모로부터 받은 값을 변경 시키기 위해서는 computed 속성을 활용하거나 혹은 data속성 안에 재할당 시킨다.  
+이렇게 사용하게 되면 자식 컴포넌트 내에서만 변경이 적용 된다.
+부모로부터 받은 prop값을 자식 컴포넌트 내의 특정 변수에 할당시켜 할당 된 변수를 변경하는 것이기 때문이다.
