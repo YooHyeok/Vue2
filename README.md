@@ -486,7 +486,7 @@ Vue {_uid:0, _isValue: true, $options: {...}, _renderproxy: Proxy, _self: Vue, .
       }
     }
   }
-  </>
+  </script>
   ```
 
   ```vue
@@ -500,3 +500,187 @@ Vue {_uid:0, _isValue: true, $options: {...}, _renderproxy: Proxy, _self: Vue, .
   }
   </script>
   ```
+
+
+# Props Type - Property Validation(프로퍼티 타입 유효성 검사)
+
+props가 어떤 데이터타입을 받아야 하는지 기록하기 위해 데이터타입을 작성한다.
+
+ ```vue
+  <template>
+    <UserDetail v-bind:nameOfChild="{name, familyName: 'Yoo'}"></UserDetail>
+  </template>
+
+  <script>
+  import UserDetail from "./UserDetail.vue"
+
+  export default {
+    components: {
+      UserDetail
+    },
+    data () {
+      return {
+        name: 'School'
+      }
+    },
+    methods: {
+      changeName () { // changeName = function () {} 과 동일한 표현?
+        this.name = "YooHyeok"
+      }
+    }
+  }
+  </script>
+  ```
+
+  ```vue
+  <template>
+      <p>{{ nameOfChild.name }}</p>
+      <p>{{ nameOfChild.familyName }}</p>
+  </template>
+
+  <script>
+  export default {
+    props: {
+      nameOfChild: Object
+    }
+  }
+  </script>
+  ```
+
+위와 같이 props를 기본 대괄호가 아닌 Object형태로 블록을 구성하고, 넘겨받은 props이름이 어떤 타입인지 지정해준다.  
+만약 `nameOfChild: String` 과 같이 타입이 일치하지 않게 선언한다면 개발자 도구 콘솔에는 아래와 같은 오류가 출력된다.
+
+```text/plain
+main.js:19 [Vue warn]: Invalid prop: type check failed for prop "nameOfChild". Expected String, got Object 
+
+found in
+
+---> <UserDetail> at src/components/user/UserDetail.vue
+       <User> at src/components/user/User.vue
+         <VMain>
+           <VApp>
+             <App> at src/App.vue
+               <Root>
+```
+
+아래와 같이 조금 더 구체적으로 상세하게 타입을 지정할 수도 있다.
+  ```vue
+  <script>
+  export default {
+    props: {
+      nameOfChild: {
+         name: String,
+         familyName: String
+      }
+    }
+  }
+  </script>
+  ```
+### Props 세부 설정1 (type, required), default)
+
+  ```vue
+    <UserDetail v-bind:nameOfChild="name"></UserDetail>
+  ```
+  ```vue
+  <script>
+  export default {
+    props: {
+      nameOfChild: {
+         name: {
+          type: String,
+          required: true
+         }
+      }
+    }
+  }
+  </script>
+  ```
+  단일값에 대한 props에는 위와 같이 type, required 등의 세부 옵션을 부여할 수 있게 된다.
+### Props 세부 설정2 (default)
+
+  ```vue
+    <UserDetail></UserDetail>
+  ```
+  ```vue
+  <script>
+  export default {
+    props: {
+      nameOfChild: {
+         name: {
+          type: String,
+          default: "기본값"
+         }
+      }
+    }
+  }
+  </script>
+  ```
+  props 자체를 넘기지 않았을 경우 자식 컴포넌트에서 기본값을 지정할 수 있게 된다.
+
+  ### Object type Props default 예외사항
+
+  ```vue
+  <UserDetail :nameOfChild="{name: '존'}"></UserDetail>
+  ```
+
+  ```vue
+  export default {
+    props: {
+       nameOfChild: {
+        name: {
+          type: String,
+          required: true // 필수 값 여부
+        },
+        familyName: {
+          type: Number,
+          default: 10
+        }
+      } 
+    }
+  }
+  ```
+  위와같이 Object 타입의 Props에 name이라는 속성:값 만 전달한다고 했을 때 위처럼 작성하면 정상적으로 적용되지 않는다.  
+  실제 실험시 familyName 속성의 default에 대한 값만 적용되지 않는것을 확인할 수 있는데, 아마 name 속성의 required 속성도 제대로 적용되지 않을것으로 예측된다.  
+  그 이유는 아래와 같다.
+  
+  ```vue
+  <UserDetail></UserDetail>
+  ```
+
+  ```vue
+  export default {
+    props: {
+      nameOfChild: {
+        type: Object,
+        required: true,
+        default: () => {
+        return { name:"기본값이다임마", familyName: "메롱" }
+        }
+      }
+    }
+  }
+  ```
+  위와 같이 v-vind자체를 하지 않았을 경우에만 default가 성립된다.  
+  코드를 확인하면 nameOfChild를 하나의 객체 타입으로 지정하고 해당 객체에 required와 default를 적용하였다.  
+  즉, Object 타입 Props에 대한 default는 속성 하나가 덜 넘어오는 경우에는 단일 속성에 대해서는 default 성립이 안된다.
+  데이터 전체를 넘기지 않았을 때 즉, vind자체를 하지 않았을 때 전체에 대한 모든 필드에 대한 default적용을 하는것이다.
+
+  내가 이부분에서 햇갈렸던 이유는 기본적으로 Javascript의 Object에서 존재하지 않는 Property를 Object에 접근하여 값을 초기화하면 값이 초기화된 해당 Propery가 추가된다.  
+  이 원리를 Vue의 Props에 오해하고 적용했기에 이 문제가 발생한것이다.
+
+  다시한번 정리하자면 required와 default는 넘겨주는 Props의 전체 타입(가장 바깥으로 감싸고있는 타입) 그 자체에 적용하도록 한다.
+
+  ```vue
+  export default {
+    props: {
+      nameOfChild: {
+        type: Object,
+        required: true,
+        default: {
+         name:"기본값이다임마", familyName: "메롱"
+        }
+      }
+    }
+  }
+  ```
+  위와같이 default는 함수형태가 아니여도 적용된다.
