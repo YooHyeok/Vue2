@@ -684,3 +684,39 @@ found in
   }
   ```
   위와같이 default는 함수형태가 아니여도 적용된다.
+
+# props와 computed
+- Vue 인스턴스가 생성될 때, data의 값을 받아 미리 계산하여 저장하고 불러온다.
+- method 형태로 작성하지만 Vue에서 proxy 처리하여 property처럼 사용한다.
+- 특정 데이터의 변경사항을 실시간으로 처리한다.
+- 호출시에도 method가 아닌 property와 같이 호출한다.
+
+```vue
+<template>
+<div class="red lighten-3 pa-3">
+  <h3>자세한 회원 정보를 확인합니다.</h3>
+  <p>{{ sayHello }}</p>
+
+</div>
+</template>
+<script>
+export default {
+  props: {
+    nameOfChild: {
+        name: {
+        type: String,
+        default: "기본값"
+        }
+    }
+  },
+  computed: { // 자식 컴포넌트에서 props값 활용하기.
+    sayHello () {
+      return this.nameOfChild + `하이!`
+    }
+  },
+}
+</script>
+```
+예제에서는 this키워드를 통해 부모컴포넌트의 props에 접근한뒤 데이터를 변경하는데 사용했다.  
+여기서 알수 있는 점은 this키워드를 통해 props에 접근하였다는 것인데 일반적으로 data() 함수를 통해 내보내기 하는 변수를
+this키워드를 통해 접근하는 예를 생각한다면 props를 넘겨받는 순간 `자식 컴포넌트의 data:{} 에 등록`되는것으로 예측할 수 있다.
