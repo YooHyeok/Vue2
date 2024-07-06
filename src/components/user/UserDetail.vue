@@ -16,6 +16,11 @@ export default {
       required: true // 필수 값 여부
     }
   },
+  computed: { // 자식 컴포넌트에서 props값 활용하기.
+    sayHello () {
+      return this.nameOfChild + `하이!`
+    }
+  },
   data () {
     return {
     }
