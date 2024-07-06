@@ -11,6 +11,7 @@
           <v-layout wrap>
             <v-flex xs12 sm6>
               <UserDetail v-bind:nameOfChild="name"></UserDetail>
+              <!-- <UserDetail></UserDetail> --> <!-- props를 넘기지 않는 경우 (default 예시) -->
             </v-flex>
             <v-flex xs12 sm6>
               <UserEdit></UserEdit>
@@ -39,7 +40,7 @@ export default {
   },
   methods: {
     changeName () { // changeName = function () {} 과 동일한 표현?
-      this.name = "Hoza"
+      this.name = "School"
     }
   }
 }
