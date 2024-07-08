@@ -722,7 +722,7 @@ computed속성으로 정의한 함수는 호출부인 () 없이 함수명 만으
 여기서 알수 있는 점은 this키워드를 통해 props에 접근하였다는 것인데 일반적으로 data() 함수를 통해 내보내기 하는 변수를
 this키워드를 통해 접근하는 예를 생각한다면 props를 넘겨받는 순간 `자식 컴포넌트의 data:{} 에 등록`되는것으로 예측할 수 있다.
 
-## Props mutating - 부모/자식간 props 조작에 대한 위험성
+## Props 부모/자식간 props 조작에 대한 위험성
 ```vue
 <v-btn @click="switchName()">이름 변경</v-btn>
 ```
@@ -757,3 +757,201 @@ found in
 부모로부터 받은 값을 변경 시키기 위해서는 computed 속성을 활용하거나 혹은 data속성 안에 재할당 시킨다.  
 이렇게 사용하게 되면 자식 컴포넌트 내에서만 변경이 적용 된다.
 부모로부터 받은 prop값을 자식 컴포넌트 내의 특정 변수에 할당시켜 할당 된 변수를 변경하는 것이기 때문이다.
+
+# *v-model*
+변경과 데이터를 엮어주는것 이라고 말할 수 있다.  
+1. 표시할 데이터
+2. 변경이 있다면 데이터에 반영
+
+위 두가지를 한 세트로 묶은것을 쌍방향(two-way) 데이터 바인딩이며, 이것을 v-model이 해준다는 것이다.
+
+- `:value` & `@input` 활용  
+  일반적으로 이 방법은 표시할 데이터 따로, 변경 반영 따로 지정하는 방식이다.
+  - @input 문법 1
+    ```vue
+    <template>
+    <v-text-field
+      label="이름"
+      :value="user.name"
+      @input="(currentValue) => {user.name = currentValue}"
+    />
+    </template>
+    ```
+  - @input 문법 2
+    ```vue
+    <template>
+    <v-text-field
+      label="이름"
+      :value="user.name"
+      @input="user.name = $event"
+    />
+    </template>
+    ```
+
+    #### $event
+    Vue에서 @input 등의 이벤트 핸들러에서 $event는 해당 이벤트를 트리거한 원본 DOM 이벤트 객체를 가리킨다.
+    (블로그에서는 $event.target.value로 접근하는데 나는 그렇게하면 value를 찾을 수 없다는 오류와 함께 $event 그 자체가 value가 된다.. 왜 그런지는 잘 모르겠으므로 더 딥다이브하게 공부해봐야함)
+
+- `v-model` 활용
+  ```vue
+  <template>
+  <v-text-field
+    label="이름"
+    v-model="user.name"
+  />
+  </template>
+  ```
+
+
+# *$emit과 부모/자식 데이터 공유*
+
+## 문제 발생
+
+- ### 부모 컴포넌트  
+  data에 변수를 등록하고, 해당 변수들을 자식 컴포넌트에 props로 전달한다.
+  ```vue
+  <template>
+    <UserEdit
+      :name="name"
+    />
+  </template>
+  <script>
+  import UserEdit from "./UserEdit.vue"
+
+  export default {
+    components: {
+      UserEdit
+    },
+    data () {
+      return {
+        name: 'School',
+      }
+    }
+  }
+  </script>
+  ```
+
+- ### 자식 컴포넌트
+  부모 컴포넌트로부터 전달받은 props를 자식에서 v-model을 통해 직접 수정하게 되면 이전과 동일한 avoid mutating 에러가 콘솔에 출력된다.  
+  이는 부모 컴포넌트의 data 변수를 직접 수정하기 때문에 발생하는것이다.  
+  ```vue
+  <template>
+      <v-text-field
+        label="Error 예시 부모 props name 직접 수정"
+        v-model="name"
+      />
+  </template>
+
+  <script>
+  export default {
+    props: [ 'name'],
+  }
+  </script>
+  ```
+
+  이때 사용하는것이 바로 `$emit()` 함수이다.  
+  `emit()`은 특정 시그널(신호)와 데이터를 함께 송신한다.  
+  형태는 `emit('신호값',데이터)`와 같다.  
+  emit을 수신할 수신지 컴포넌트 에서는 emit의 신호값을 `@신호값:함수명` 형태로 속성을 지정하고
+  `methods`에 함수를 구현한다.  
+  이때 함수의 매개변수에 자식 컴포넌트에서 emit을 통해 전달받은 데이터를 인자값으로 받아 사용할 수 있게 된다.
+
+## Emit 적용
+- ### 부모 컴포넌트  
+  data에 변수를 등록하고, 해당 변수들을 자식 컴포넌트에 props로 전달한다.
+  ```vue
+  <template>
+    <UserEdit
+      :name="name"
+      :hasDog="hasDog"
+    />
+  </template>
+  <script>
+  import UserEdit from "./UserEdit.vue"
+
+  export default {
+    components: {
+      UserEdit
+    },
+    data () {
+      return {
+        name: 'School',
+        hasDog: true,
+      }
+    }
+  }
+  </script>
+  ```
+
+- ### 자식 컴포넌트  
+  자식 컴포넌트에서 직접 데이터를 수정할 수 없으니 `emit()`함수를 사용하기 전에 먼저 부모로 부터 받은 props를 user라는 Object로 재정의 및 초기화를 한다.  
+  이후 `emit()`을 통해 신호와 재정의한 user객체를 함께 매개변수로 적용한다.
+  ```vue
+  <template>
+    <div class="yellow lighten-3 pa-3">
+      <h3>회원 정보를 수정할 수 있습니다.</h3>
+      <p>수정사항</p>
+      <v-text-field
+        label="이름"
+        v-model="user.name"
+      />
+      <v-radio-group v-model="user.hasDog">
+        <v-radio label="반려견 있음" :value="true"></v-radio>
+        <v-radio label="반려견 없음" :value="false"></v-radio>
+      </v-radio-group>
+      <v-btn @click="changeUser">수정완료</v-btn>
+    </div>
+  </template>
+
+  <script>
+  export default {
+    props: [ 'name', 'address', 'phone', 'hasDog'],
+    data () {
+      return {
+        user: {}
+      }
+    },
+    created () { // 각 props 값 현재 컴포넌트의 data의 user Object에 재할당
+      this.user.name = this.name
+      this.user.hasDog = this.hasDog
+    },
+    methods: {
+      changeUser () {
+        this.$emit("child", this.user) 
+      }
+    }
+  }
+  </script>
+  ```
+
+- ### 부모 컴포넌트  
+  자식 컴포넌트인 UserEdit 컴포넌트 Element에서 `@child="parents"` 과 같이 속성을 정의하여 methods 영역에 함수를 구현하고 바인딩한다.
+  ```vue
+  <template>
+    <UserEdit
+      :name="name"
+      :hasDog="hasDog"
+      @child="parents"
+    />
+  </template>
+  <script>
+  import UserEdit from "./UserEdit.vue"
+  export default {
+    components: {
+      UserEdit
+    },
+    data () {
+      return {
+        name: 'School',
+        hasDog: true,
+      }
+    },
+    methods: {
+      parents (user) { // emit 즉 @child로 받은 value를 매개변수로 받는다.
+        this.name = user.name
+        this.hasDog = user.hasDog
+      }
+    }
+  }
+  </script>
+  ```
