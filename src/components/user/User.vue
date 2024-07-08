@@ -10,11 +10,28 @@
           <hr>
           <v-layout wrap>
             <v-flex xs12 sm6>
-              <UserDetail v-bind:nameOfChild="name"></UserDetail>
+
+              <!-- props 예제 -->
+              <!-- <UserDetail v-bind:nameOfChild="nameOfChild"/> -->
               <!-- <UserDetail></UserDetail> --> <!-- props를 넘기지 않는 경우 (default 예시) -->
+
+               <!-- emit 예제 -->
+              <UserDetail
+              :name="name"
+              :address="address"
+              :phone="phone"
+              :hasDog="hasDog"
+              />
+
             </v-flex>
             <v-flex xs12 sm6>
-              <UserEdit></UserEdit>
+              <UserEdit
+                :name="name"
+                :address="address"
+                :phone="phone"
+                :hasDog="hasDog"
+                @child="parents"
+              />
             </v-flex>
           </v-layout>
         </div>
@@ -35,12 +52,23 @@ export default {
   },
   data () {
     return {
-      name: '뷰제이에스'
+      nameOfChild: 'YooHyeok',
+      name: 'School',
+      address: 'Seoul',
+      phone: '1234-5678',
+      hasDog: true,
     }
   },
   methods: {
     changeName () { // changeName = function () {} 과 동일한 표현?
-      this.name = "School"
+      this.nameOfChild = "스쿨"
+    },
+    parents (user) { // emit 즉 @child로 받은 value를 매개변수로 받는다.
+      this.name = user.name
+      this.address = user.address
+      this.phone = user.phone
+      this.hasDog = user.hasDog
+      console.log("부모가 받았어!")
     }
   }
 }
