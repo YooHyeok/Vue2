@@ -28,14 +28,24 @@
         <v-list-item-content>반려견유무 : </v-list-item-content>
         <v-list-item-content class="d-inline text-right">{{ hasDogKr }}</v-list-item-content>
       </v-list-item>
+      <v-list-item>
+        <v-list-item-content>수정일자 : </v-list-item-content>
+        <v-list-item-content class="d-inline text-right">{{ editedDate }}</v-list-item-content>
+      </v-list-item>
 
     </v-list>
   </div>
 </template>
 
 <script>
+import { eventBus } from '../../main';
 
 export default {
+  data() {
+    return {
+      editedDate: null
+    }
+  },
   props: ['nameOfChild', 'name', 'address', 'phone', 'hasDog'],
  /*  props: {
     // nameOfChild: String
@@ -57,10 +67,15 @@ export default {
       this.nameOfChild = '컴퓨터'
     }
   },
-  data () {
-    return {
-    }
-  } 
+  /**
+   * 3. created 훅을 통해 eventBus에 접근하여 
+   * $.on()을 통해 이벤트 리스너를 등록한다.
+   */
+  created () {
+    eventBus.$on('userWasEdited', (date) => {
+      this.editedDate = date
+    })
+  }
 }
 
 </script>
