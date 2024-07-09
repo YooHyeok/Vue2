@@ -955,3 +955,56 @@ found in
   }
   </script>
   ```
+
+# EventBus와 created훅 (형제 컴포넌트간 통신)
+
+- ## created 훅  
+  [주요 역할]
+  1. 데이터 초기화  
+    → 데이터나 속성 값을 설정하거나 변경할 수 있다.
+  2. 비동기 작업 시작  
+    → API 호출이나 데이터 가져오기와 같은 비동기 작업을 시작할 수 있다.
+  3. `이벤트 리스너 등록($on)`  
+    → 이벤트 버스 또는 다른 이벤트 소스에 이벤트 리스너를 등록할 수 있다.
+  4. 라이브러리 초기화  
+    → 서드 파티 라이브러리나 플러그인을 초기화 할 수 있다.
+
+  - ### created & $on()
+    ```vue
+    <script>
+    export default {
+      data() {
+        return {
+          editedDate: null
+        }
+      },
+      created() {
+        eventBus.$on(/* '이벤트명' */, /* 콜백함수  ()=>{} */) // 이벤트 리스너 등록
+      }
+    }
+    </script>
+    ```
+- ## EventBus
+  - ### `main.js`
+      전역으로 eventBus라는 상수값 내보낸다.
+      여기서 new Vue()란 새로운 vue인스턴스를 생성하는것.
+    ```javascript
+    /* 생략 */
+    export const eventBus = new Vue()
+    /* 생략 */
+    ```
+    eventBus에 $emit을 통해 신호를 송신
+    즉, eventBus라는 새로운 vue인스턴스가 부모 역할을 한다는 것으로 추론 가능하다.
+    해당 인스턴스를 구독하는 모든 컴포넌트에서는 해당 신호를 수신할 수 있게 된다.
+    ```vue
+    <script>
+    import { eventBus } from './main';
+    export default {
+      methods: {
+        changeUser () {
+          eventBus.$emit('userWasEdited', new Date())
+        }
+      }
+    }
+    </script>
+    ```
