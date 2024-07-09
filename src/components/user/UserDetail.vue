@@ -72,7 +72,10 @@ export default {
    * $.on()을 통해 이벤트 리스너를 등록한다.
    */
   created () {
-    eventBus.$on('userWasEdited', (date) => {
+    /* eventBus.$on('userWasEdited', (date) => {
+      this.editedDate = date
+    }) */
+    eventBus.userWasEditedOn((date) => {
       this.editedDate = date
     })
   }

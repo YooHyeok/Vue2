@@ -15,7 +15,16 @@ Vue.config.productionTip = false
  * 1. eventBus라는 상수값 내보내기
  * new Vue()란 새로운 vue인스턴스를 생성하는것.
  */
-export const eventBus = new Vue()
+export const eventBus = new Vue({
+  methods: {
+    userWasEditedEmit(date) {
+      this.$emit('userWasEdited', date)
+    },
+    userWasEditedOn(callback) {
+      this.$on('userWasEdited', callback)
+    }
+  }
+})
 
 new Vue({
   router,

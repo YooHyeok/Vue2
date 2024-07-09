@@ -58,7 +58,8 @@ export default {
        * 즉, eventBus라는 새로운 vue인스턴스가 부모 역할을 한다는 것으로 추론 가능하다.
        * 해당 인스턴스를 구독하는 모든 컴포넌트에서는 해당 신호를 수신할 수 있게 된다.
        */
-      eventBus.$emit('userWasEdited', new Date())
+      // eventBus.$emit('userWasEdited', new Date())
+      eventBus.userWasEditedEmit(new Date())
     }
   }
 }
