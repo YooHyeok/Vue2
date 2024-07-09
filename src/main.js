@@ -11,6 +11,12 @@ Vue.component('Appstatus', Status)
 
 Vue.config.productionTip = false
 
+/**
+ * 1. eventBus라는 상수값 내보내기
+ * new Vue()란 새로운 vue인스턴스를 생성하는것.
+ */
+export const eventBus = new Vue()
+
 new Vue({
   router,
   store,
