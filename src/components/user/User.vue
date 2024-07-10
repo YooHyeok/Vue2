@@ -7,6 +7,7 @@
           <h1>User 컴포넌트</h1>
           <p>이름: {{ name }}</p>
           <p>{{ getDateAndTime(createdAt) }}</p>
+          <p>{{ this.mixinData }}</p>
           <v-btn @click="changeName()">이름 변경</v-btn>
           <hr>
           <v-layout wrap>
