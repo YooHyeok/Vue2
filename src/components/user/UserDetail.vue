@@ -67,6 +67,13 @@ export default {
     switchName () { // 부모 컴포넌트의 props 값 수정.
       this.nameOfChild = '컴퓨터'
     },
+    getDateAndTime(date) {
+      if(!date) return
+      let hour = date.getHours()
+      let minutes = date.getMinutes()
+      let fullDate = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`
+      return `${hour}:${minutes} ${fullDate}`
+    }
   },
   mixins: [dateFormat],
 
