@@ -1008,3 +1008,45 @@ found in
     }
     </script>
     ```
+# Mixin
+여러 컴포넌트에서 불러와 재사용 할 수 있는 기능을 만들어준다.  
+각 컴포넌트에서 똑같은 기능을 하는 것을 한군데에 모아 두었다가, 수정사항이 발생했을 때  
+모아놓은 한 군데만 수정하면 해당 기능을 참조하고 있던 수많은 컴포넌트들 모두에 적용된다.
+
+```js
+export const dateFormat = {
+  methods: {
+    string(message) {
+      if(!message) return
+      return `message`
+    },
+    count(number) {
+      if(!message) return
+      return number++
+    }
+  }
+}
+```
+위 코드를 통해 string, count 함수를 포함하는 methods 훅을 내보낸다.  
+이후 아래 코드를 통해 해당 모듈 파일을 import하면 코드상에서 참조 없이  
+함수를 자유롭게 호출하여 사용이 가능하다.
+
+```vue
+<template>
+<p>{{ string("메롱") }}</p> <!-- dateFormat 으로부터 호출된 string함수 -->
+<p>{{ increase(3) }}</p>
+</template>
+
+<script>
+import { dateFormat } from "../../mixins/dateFormat"
+export default {
+  mixins: [dateFormat],
+  methods: {
+    increase(number) {
+      count(number) // dateFormat 으로부터 호출된 count함수
+    }
+  }
+}
+</script>
+```
+ ### *`mixin은 컴포넌트와 같은 라이프사이클을 가지기 때문에 mounted(), created(), $router등을 사용할 수 있으며 훅을 import한 모든 vue 파일에서는 사용이 가능하다.`*
