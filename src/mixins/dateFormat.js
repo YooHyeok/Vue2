@@ -2,6 +2,11 @@
  * Mixin 예제를 위한 날짜 형식 포맷 공통 모듈
  */
 export const dateFormat = {
+  data() {
+    return {
+      mixinData: '나는 믹스인이다!'
+    }
+  },
   methods: {
     getDateAndTime(date) {
       if(!date) return
