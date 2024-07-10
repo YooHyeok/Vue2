@@ -30,7 +30,7 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-content>수정일자 : </v-list-item-content>
-        <v-list-item-content class="d-inline text-right">{{ editedDate }}</v-list-item-content>
+        <v-list-item-content class="d-inline text-right">{{ getDateAndTime(editedDate) }}</v-list-item-content>
       </v-list-item>
 
     </v-list>
@@ -39,6 +39,7 @@
 
 <script>
 import { eventBus } from '../../main';
+import { dateFormat } from '../../mixins/dateFormat';
 
 export default {
   data() {
@@ -65,8 +66,10 @@ export default {
   methods: {
     switchName () { // 부모 컴포넌트의 props 값 수정.
       this.nameOfChild = '컴퓨터'
-    }
+    },
   },
+  mixins: [dateFormat],
+
   /**
    * 3. created 훅을 통해 eventBus에 접근하여 
    * $.on()을 통해 이벤트 리스너를 등록한다.
