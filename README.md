@@ -4,6 +4,23 @@
 <summary>펼치기/접기</summary>
 <br>
 
+- ### vue/cli 설치
+
+  ```bash
+  npm install -g @vue/cli
+  ```
+
+- ### vue-cli 설치 확인
+
+  ```bash
+  vue --version
+  ```
+- ### vue project 생성
+
+  ```bash
+  vue create {프로젝트명}
+  ```
+
 - ### 개발 환경 구축 옵션 선택
   선택을 통해 개발환경을 구축할 수 있다
   ```text/plain
@@ -142,7 +159,6 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
     Vuetify 3 - Vite (preview)
     Vuetify 3 - Vue CLI (preview)
   ```
-
   ```
   ? Use a pre-made template? (will replace App.vue and HelloWorld.vue) (Y/n) Y
   ```
@@ -178,6 +194,31 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
     French
     Croatian
   (Move up and down to reveal more choices)
+  ```
+
+# Failed to find a valid digest in the 'integrity' attribute for resource [Error 대응]
+### fontawesome에 대한 intergrity 오류 발생시 대응
+
+- 콘솔 오류 내용
+  ```text/plain
+  Failed to find a valid digest in the 'integrity' attribute for resource 'https://use.fontawesome.com/releases/v5.8.2/css/all.css' with computed SHA-384 integrity 'oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay'. The resource has been blocked.
+  ```
+- index.html
+  ```html
+      <link 
+      rel="stylesheet" 
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous"
+      >
+  ```
+  index.html 파일에서 위 link태그를 아래와 같이 integrity 속성을 제거한다.
+
+- index.html
+  ```html
+      <link 
+      rel="stylesheet" 
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" 
+      crossorigin="anonymous"
+      >
   ```
 
 
@@ -717,10 +758,17 @@ export default {
 }
 </script>
 ```
+### computed
+computed 훅은 data훅에 정의한 변수 즉, 컴포넌트 상태값 (this로 접근하는 변수)이 변경될 때만 함수를 재실행하여 결과를 캐싱한다.
 computed속성으로 정의한 함수는 호출부인 () 없이 함수명 만으로 접근하여 데이터를 바인딩시킨다.  
 예제에서는 this키워드를 통해 부모컴포넌트의 props에 접근한뒤 데이터를 변경하는데 사용했다.  
 여기서 알수 있는 점은 this키워드를 통해 props에 접근하였다는 것인데 일반적으로 data() 함수를 통해 내보내기 하는 변수를
 this키워드를 통해 접근하는 예를 생각한다면 props를 넘겨받는 순간 `자식 컴포넌트의 data:{} 에 등록`되는것으로 예측할 수 있다.
+
+### mounted
+vue 인스턴스가 Dom에 마운트된 직후 실행되는 라이프사이클 훅이다.  
+여기서 mount란 생성된 vue 인스턴스를 화면(브라우저)에 부착(출력) 하는것이다.  
+화면에 모두 출력되고 난 직후 해당 훅에 선언된 메소드가 바로 실행된다.
 
 ## Props 부모/자식간 props 조작에 대한 위험성
 ```vue
