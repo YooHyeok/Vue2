@@ -95,20 +95,25 @@
   ```
 
 </details>
+<br>
 
-### 디렉토리 구조 및 파일 설명
-- #### node_modules
+## 디렉토리 구조 및 파일 설명
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
+- ### node_modules
   프로젝트에 필요한 여러가지 부품들을 모아놓는 곳이라고 할 수 있다.  
   실제로 우리가 만들지 않았지만, 누군가가 만들어 베포한 것들을 가져다가 우리 프로젝트에 사용할 수 있게된다.  
-- #### package.json
+- ### package.json
   node_modules라는 폴더 안에 설치를 해야되는 내역을 정의하는 파일이다.  
   해당 파일 내에서 어떤 node module이 필요한지, 또 버전에 대해 정의 해놓는 주문서같은 개념이다.  
   npm install이라는 명령을 하게 되면 package.json 파일에 정의된 dependencies목록을 보고 node_modules 폴더에 저장시키게 된다.
   cli 3.0 부터는 npm install 명령어를 따로 입력하지 않아도 project를 생성하는 순간 프로젝트에 필요한 기본 node_modules를 생성하게 된다.  
   또한 기존에는  `npm run dev` 라는 명령어를 통해 프로젝트를 실행 시켰었는데, cli 3.0부터는 `npm run serve` 라는 명령어를 통해 프로젝트를 실행한다.
-- #### public
+- ### public
   기본이 되는 index.html파일과 favicon.ico 파일이 구성되어 있다.
-- #### src
+- ### src
   - directory
     - assets  
       이미지 혹은 css 등 정적파일들을 저장한다.
@@ -120,8 +125,14 @@
   - App.vue
   - main.js  
     Vue 프로젝트를 최초로 구동시켜 준다.
+</details>
+<br>
 
 # 플러그인
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 처음 프로젝트 시작시, 프로젝트 개발환경을 구축할 때, 필요한것들을 선택했었다.  
 기존 버전에서는 선택 후 추후 개발환경 수정시 굉장히 복잡한 과정을 거쳤어야 했다.  
 현재는 플러그인이라는 기능을 통해 개발 도중 어느 시점에서든지 새롭게 개발환경에 대한 플러그인을 추가할 수 있게 되었다.  
@@ -131,8 +142,14 @@ vue에서 공식적으로 지원하는 플러그인이다.
 
 ## vue-cli-plugin-{...}
 npm 등 배포되어있는 오픈소스 플러그인 모듈이다.
+</details>
+<br>
 
-## vuetify
+# vuetify
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 vue cli를 한번도 사용해보지 않은 경우, 혹은 webpack으로 web개발을 해보지 않은 경우 잘 모를 수 있다.  
 괜찮다. vue를 배우기 위해 vue cli를 통해 vue 개발환경을 구축하는 것을 위해서는 이것들에 대해 아직까지는 깊게 이해하지 못해도 상관 없으며, 추후 vue cli에서 개발한경을 구축하는것에 대한 의미와, 편하게 개발하기 위해 어떤 방식으로 적용해야 하는지를 파악하면 된다.
 
@@ -195,8 +212,14 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
     Croatian
   (Move up and down to reveal more choices)
   ```
+</details>
+<br>
 
 # Failed to find a valid digest in the 'integrity' attribute for resource [Error 대응]
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 ### fontawesome에 대한 intergrity 오류 발생시 대응
 
 - 콘솔 오류 내용
@@ -220,9 +243,14 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
       crossorigin="anonymous"
       >
   ```
-
+</details>
+<br>
 
 # Vue 애플리케이션 기본 파일 구성
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 - ## App.vue
   ```vue
   <template>
@@ -263,8 +291,14 @@ vue cli에서 vue plugin으로 적용해야 하기 때문에 기본적으로 vue
 
   아직은 알 수 없는 복잡해 보이는 구문이 있지만, new 키워드와 함께 vue를 새로 선언해 주는 코드가 있다.  
   해당 코드를 통해 전체 어플리케이션이 구동된다고 보면 될것이다.  
+</details>
+<br>
 
-#### 배포 명령
+# 배포 명령
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 ```
 npm run dev
 ```
@@ -275,9 +309,13 @@ npm run dev
 이러한 `.vue` 파일을 하나의 부품이라고 가정한다면 각 부품에는 규격이 존재한다.  
 `<template>` 태그 안에는 HTML코드가 들어가고, `<script>` 태그 안에는 `export default`를 사용하여 모듈을 추출하고, 해당 모듈 객체 안에는 `data()`나 메소드와 같은 것들로 구성되어 있으며, `main.js`의 `import` 와 같은 것들이 규격 이라고 생각하면 될것이다.  
 이런 규격들을 맞춰 vue 파일들이 구성되어야만 추후 배포 명령인 `npm run dev`를 통해 생성되는 최종 결과물인 .js 파일들을 완성할 수 있게 된다.
-
+</details>
+<br>
 
 # 컴포넌트 생성 및 사용
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 ## 단일 컴포넌트 파일 간 import
 - ## Home.vue
@@ -401,8 +439,14 @@ npm run dev
     }
   </script>
   ```
+</details>
+<br>
 
 # Vue 이벤트
+
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 `v-on:이벤트명={함수명(실행식)}` 혹은 `@:이벤트명={함수명(실행식)}` 과 같은 속성 문법으로 사용한다.
 
@@ -429,8 +473,13 @@ export default {
 </script>
 
 ```
+</details>
+<br>
 
 # Vue 에서의 this
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 Vue에서 this는 Vue 자체를 가리킨다.
 Vue를 실행시키면 각 컴포넌트는 각각의 고유한 Vue 인스턴스를 가지게 된다.  
@@ -488,9 +537,13 @@ Vue {_uid:0, _isValue: true, $options: {...}, _renderproxy: Proxy, _self: Vue, .
   
 ```
 ***data에 정의한 name 변수 값이 Vue 객체 바깥쪽에 선언된 것을 확인할 수 있다.***
-
+</details>
+<br>
 
 # Props 부모-자식 컴포넌트 간 데이터 전달 
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 1. **부모 컴포넌트**  
   `v-bind:{props명}="{변수명}"` 의 형태로 자식 컴포넌트의 속성을 지정하여 자식컴포넌트에 전달한다.  
@@ -805,8 +858,14 @@ found in
 부모로부터 받은 값을 변경 시키기 위해서는 computed 속성을 활용하거나 혹은 data속성 안에 재할당 시킨다.  
 이렇게 사용하게 되면 자식 컴포넌트 내에서만 변경이 적용 된다.
 부모로부터 받은 prop값을 자식 컴포넌트 내의 특정 변수에 할당시켜 할당 된 변수를 변경하는 것이기 때문이다.
+</details>
+<br>
 
 # *v-model*
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 변경과 데이터를 엮어주는것 이라고 말할 수 있다.  
 1. 표시할 데이터
 2. 변경이 있다면 데이터에 반영
@@ -849,9 +908,13 @@ found in
   />
   </template>
   ```
-
+</details>
+<br>
 
 # *$emit과 부모/자식 데이터 공유*
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 ## 문제 발생
 
@@ -1003,8 +1066,13 @@ found in
   }
   </script>
   ```
+</details>
+<br>
 
 # EventBus와 created훅 (형제 컴포넌트간 통신)
+<details>
+<summary>펼치기/접기</summary>
+<br>
 
 - ## created 훅  
   [주요 역할]
@@ -1078,7 +1146,14 @@ found in
       }
       </script>
       ```
+</details>
+<br>
+
 # Mixin
+<details>
+<summary>펼치기/접기</summary>
+<br>
+
 여러 컴포넌트에서 불러와 재사용 할 수 있는 기능을 만들어준다.  
 각 컴포넌트에서 똑같은 기능을 하는 것을 한군데에 모아 두었다가, 수정사항이 발생했을 때  
 모아놓은 한 군데만 수정하면 해당 기능을 참조하고 있던 수많은 컴포넌트들 모두에 적용된다.
@@ -1205,3 +1280,4 @@ export default {
 이 원리에 의해 컴포넌트와, Mixin 모듈에 정의한 methods훅의 함수명이 동일하다면, 
 먼저 Mixin의 methods 훅이 정의된 뒤 최종적으로는 컴포넌트의 methods로 덮어지기 때문에  
 실제 함수 호출은 컴포넌트에 소속된 methods 훅의 함수가 호출된다.
+</details>
