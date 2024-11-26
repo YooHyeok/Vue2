@@ -1041,21 +1041,43 @@ found in
     export const eventBus = new Vue()
     /* 생략 */
     ```
-    eventBus에 $emit을 통해 신호를 송신
+   - 발행 $emit   
+    eventBus에 $emit을 통해 신호를 송신  
     즉, eventBus라는 새로운 vue인스턴스가 부모 역할을 한다는 것으로 추론 가능하다.
-    해당 인스턴스를 구독하는 모든 컴포넌트에서는 해당 신호를 수신할 수 있게 된다.
-    ```vue
-    <script>
-    import { eventBus } from './main';
-    export default {
-      methods: {
-        changeUser () {
-          eventBus.$emit('userWasEdited', new Date())
+    해당 인스턴스를 참조하는 모든 컴포넌트에서는 해당 신호를 수신할 수 있게 된다.
+    첫번째 매개변수로 발행할 event명을, 두번째 매개변수로 매개변수 전달이 가능하다.  
+      ```vue
+      <script>
+      import { eventBus } from './main';
+      export default {
+        methods: {
+          changeUser () {
+            eventBus.$emit('userWasEdited', new Date())
+          }
         }
       }
-    }
-    </script>
-    ```
+      </script>
+      ```
+    - 구독/취소 $on/$off  
+      eventBus에 $on을 통해 신호를 수신  
+      eventBus로 부터 발행된 이벤트명을 등록함으로써 구독(수신) 하게 된다.
+      컴포넌트의 mounted 혹은 created 훅에서 수신하도록 처리하고,  
+      컴포넌트가 해제될때 구독을 취소하여 리소스를 관리한다.  
+      ```vue
+      <script>
+      import { eventBus } from './main';
+      export default {
+        created () {
+          eventBus.$on('userWasEdited', (date) => {
+            this.editedDate = date
+          })
+        },
+        beforeDestroyed() {
+          eventBus.$off('userWasEdited')
+        }
+      }
+      </script>
+      ```
 # Mixin
 여러 컴포넌트에서 불러와 재사용 할 수 있는 기능을 만들어준다.  
 각 컴포넌트에서 똑같은 기능을 하는 것을 한군데에 모아 두었다가, 수정사항이 발생했을 때  
